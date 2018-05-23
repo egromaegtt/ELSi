@@ -1,0 +1,637 @@
+SET ThousandSep=',';
+SET DecimalSep='.';
+SET MoneyThousandSep=',';
+SET MoneyDecimalSep='.';
+SET MoneyFormat='$#,##0.00;($#,##0.00)';
+SET TimeFormat='h:mm:ss TT';
+SET DateFormat='M/D/YYYY';
+SET TimestampFormat='M/D/YYYY h:mm:ss[.fff] TT';
+SET FirstWeekDay=6;
+SET BrokenWeeks=1;
+SET ReferenceDay=0;
+SET FirstMonthOfYear=1;
+SET CollationLocale='en-US';
+SET CreateSearchIndexOnReload=1;
+SET MonthNames='Jan;Feb;Mar;Apr;May;Jun;Jul;Aug;Sep;Oct;Nov;Dec';
+SET LongMonthNames='January;February;March;April;May;June;July;August;September;October;November;December';
+SET DayNames='Mon;Tue;Wed;Thu;Fri;Sat;Sun';
+SET LongDayNames='Monday;Tuesday;Wednesday;Thursday;Friday;Saturday;Sunday';
+
+SET vProject = 'ELSI';
+SET vWorkspace = 'TABLES';
+SET vVersion = '1.1';
+
+[Variables-Formulas]:
+LOAD
+    Variable,
+    Expression
+FROM [lib://03_MKTA_New (pubedu_georgem)/03_MASTER_TABLES\Master_VARIABLES.xlsx]
+(ooxml, embedded labels, table is Sheet1);
+
+LET vNumberOfRows = NoOfRows('Variables-Formulas');
+For i = 0 to (vNumberOfRows - 1)
+LET vVariable_Name = Peek('Variable',i,'Expression');
+LET [$(vVariable_Name)] = Peek('Expression',i,'Expression');
+Next
+
+0:
+Load * Inline ["Agency ID"];
+
+Concatenate(0)
+LOAD
+    'District' as "Reporting Level",
+    '' as "State School ID",
+    '' as "School Name",
+    '' as "School ID",
+    GeoMakePoint("Latitude [District] 2015-16","Longitude [District] 2015-16") as "Entity Geo Point",
+    "Agency Name",
+    "State Name [District] Latest available year" as "State Name",
+    "State Abbr [District] Latest available year" as "State Abbr",
+    "Agency ID - NCES Assigned [District] Latest available year" as "Agency ID",
+    "Web Site URL [District] 2015-16" as "Web Site URL",
+    "Years District Did Not Report Data [District] Latest available year" as "Years Did Not Report Data",
+    "Years District Reported Data [District] Latest available year" as "Years Reported Data",
+    "Total Number of Public Schools [Public School] 2015-16" as "Total Number of Public Schools",
+    "Total Number Operational Charter Schools [Public School] 2015-16" as "Total Number Operational Charter Schools",
+    "Total Number Operational Schools [Public School] 2015-16" as "Total Number Operational Schools",
+    "County Number [District] 2015-16" as "County Number",
+    "County Name [District] 2015-16" as "County Name",
+    "Location Address 1 [District] 2015-16" as "Location Address",
+    "Location City [District] 2015-16" as "Location City",
+    "Location ZIP [District] 2015-16" as "Location ZIP",
+    "Location ZIP4 [District] 2015-16" as "Location ZIP4",
+    "Phone Number [District] 2015-16" as "Phone Number",
+    "Agency Type [District] 2015-16" as "Agency Type",
+    "Urban-centric Locale [District] 2015-16" as "Urban-centric Locale",
+    "Latitude [District] 2015-16" as "Latitude",
+    "Longitude [District] 2015-16" as "Longitude",
+    "State Agency ID [District] 2015-16" as "State Agency ID",
+    "LEA Charter Status [District] 2015-16" as "LEA Charter Status",
+    "Congressional Code [District] 2015-16" as "Congressional Code",
+    "Metro Micro Area Code [District] 2015-16" as "Metro Micro Area Code",
+    "Agency Charter Status [District] 2015-16" as "Agency Charter Status",
+    "Supervisory Union (ID) Number [District] 2015-16" as "Supervisory Union (ID) Number",
+    "CSA ID [District] 2015-16" as "CSA ID",
+    "CSA Name [District] 2015-16" as "CSA Name",
+    "CBSA ID [District] 2015-16" as "CBSA ID",
+    "CBSA Name [District] 2015-16" as "CBSA Name",
+    "Start of Year Status [District] 2015-16" as "Start of Year Status",
+    "Updated Status [District] 2015-16" as "Updated Status",
+    "Effective Date of Updated Status [District] 2015-16" as "Effective Date of Updated Status",
+    "Lowest Grade Offered [District] 2015-16" as "Lowest Grade Offered",
+    "Highest Grade Offered [District] 2015-16" as "Highest Grade Offered",
+    "Prekindergarten offered [District] 2015-16" as "Prekindergarten Offered",
+    "Kindergarten offered [District] 2015-16" as "Kindergarten Offered",
+    "Grade 1 offered [District] 2015-16" as "Grade 1 Offered",
+    "Grade 2 offered [District] 2015-16" as "Grade 2 Offered",
+    "Grade 3 offered [District] 2015-16" as "Grade 3 Offered",
+    "Grade 4 offered [District] 2015-16" as "Grade 4 Offered",
+    "Grade 5 offered [District] 2015-16" as "Grade 5 Offered",
+    "Grade 6 offered [District] 2015-16" as "Grade 6 Offered",
+    "Grade 7 offered [District] 2015-16" as "Grade 7 Offered",
+    "Grade 8 offered [District] 2015-16" as "Grade 8 Offered",
+    "Grade 9 offered [District] 2015-16" as "Grade 9 Offered",
+    "Grade 10 offered [District] 2015-16" as "Grade 10 Offered",
+    "Grade 11 offered [District] 2015-16" as "Grade 11 Offered",
+    "Grade 12 offered [District] 2015-16" as "Grade 12 Offered",
+    "Grade 13 Offered [District] 2015-16" as "Grade 13 Offered",
+    "Ungraded offered [District] 2015-16" as "Ungraded Offered",
+    "Adult Education Offered [District] 2015-16" as "Adult Education Offered",
+    "No Grades Offered [District] 2015-16" as "No Grades Offered"
+FROM [lib://03_MKTA_New (pubedu_georgem)/04_NCES\ELSI\ELSI District Info.csv]
+(txt, codepage is 1252, embedded labels, delimiter is ',', msq, header is 6 lines);
+
+
+
+
+
+
+
+
+subgroup:
+NoConcatenate
+Load * Inline ["Agency ID"];
+
+grade:
+NoConcatenate
+Load * Inline ["Agency ID"];
+
+Set a = 10;
+Set b = 11;
+Set c = 2011;
+
+Do while b < 17
+
+Concatenate(subgroup)
+LOAD
+//     "Agency Name",
+    '$(c)' as "School Year",
+//     "State Name [District] Latest available year",
+//     "State Abbr [District] Latest available year",
+    "Agency ID - NCES Assigned [District] Latest available year" as "Agency ID",
+    "Total Students All Grades (Excludes AE) [District] 20$(a)-$(b)" as "Total Students All Grades (Excludes AE)",
+    "Limited English Proficient (LEP) / English Language Learners (ELL) [District] 20$(a)-$(b)" as "Limited English Proficient (LEP) / English Language Learners (ELL)",
+    "Individualized Education Program Students [District] 20$(a)-$(b)" as  "Individualized Education Program",
+    "Free Lunch Eligible [Public School] 20$(a)-$(b)" as "Free Lunch Eligible",
+    "Reduced-price Lunch Eligible Students [Public School] 20$(a)-$(b)" as "Reduced-price Lunch Eligible",
+    "Free and Reduced Lunch Students [Public School] 20$(a)-$(b)" as "Free and Reduced Lunch",
+    "Male Students [District] 20$(a)-$(b)" as Male,
+    "Female Students [District] 20$(a)-$(b)" as Female,
+    "American Indian/Alaska Native Students [District] 20$(a)-$(b)" as "American Indian/Alaska Native",
+    "Asian or Asian/Pacific Islander Students [District] 20$(a)-$(b)" as "Asian or Asian/Pacific Islander",
+    "Hispanic Students [District] 20$(a)-$(b)" as Hispanic,
+    "Black Students [District] 20$(a)-$(b)" as Black,
+    "White Students [District] 20$(a)-$(b)" as White,
+    "Hawaiian Nat./Pacific Isl. Students [District] 20$(a)-$(b)" as "Hawaiian Nat./Pacific Isl.",
+    "Two or More Races Students [District] 20$(a)-$(b)" as "Two or More Races",
+    "Total Race/Ethnicity [District] 20$(a)-$(b)" as "Total Race/Ethnicity"
+FROM [lib://03_MKTA_New (pubedu_georgem)/04_NCES\ELSI\ELSI District Enr Subgroup.csv]
+(txt, codepage is 932, embedded labels, delimiter is ',', msq, header is 6 lines);
+
+Concatenate(grade)
+LOAD
+    '$(c)' as "School Year",
+//     "Agency Name",
+//     "State Name [District] Latest available year",
+//     "State Abbr [District] Latest available year",
+    "Agency ID - NCES Assigned [District] Latest available year" as "Agency ID",
+    "Grades 1-8 Students [District] 20$(a)-$(b)" as "Grades 1-8",
+    "Grades 9-12 Students [District] 20$(a)-$(b)" as "Grades 9-12",
+    "Prekindergarten Students [District] 20$(a)-$(b)" as Prekindergarten,
+    "Kindergarten Students [District] 20$(a)-$(b)" as Kindergarten,
+    "Grade 1 Students [District] 20$(a)-$(b)" as "Grade 1",
+    "Grade 2 Students [District] 20$(a)-$(b)" as "Grade 2",
+    "Grade 3 Students [District] 20$(a)-$(b)" as "Grade 3",
+    "Grade 4 Students [District] 20$(a)-$(b)" as "Grade 4",
+    "Grade 5 Students [District] 20$(a)-$(b)" as "Grade 5",
+    "Grade 6 Students [District] 20$(a)-$(b)" as "Grade 6",
+    "Grade 7 Students [District] 20$(a)-$(b)" as "Grade 7",
+    "Grade 8 Students [District] 20$(a)-$(b)" as "Grade 8",
+    "Grade 9 Students [District] 20$(a)-$(b)" as "Grade 9",
+    "Grade 10 Students [District] 20$(a)-$(b)" as "Grade 10",
+    "Grade 11 Students [District] 20$(a)-$(b)" as "Grade 11",
+    "Grade 12 Students [District] 20$(a)-$(b)" as "Grade 12",
+    "Ungraded Students [District] 20$(a)-$(b)" as Ungraded
+FROM [lib://03_MKTA_New (pubedu_georgem)/04_NCES\ELSI\ELSI District Enr Grade.csv]
+(txt, codepage is 932, embedded labels, delimiter is ',', msq, header is 6 lines);
+
+Let a = a+1;
+Let b = b+1;
+Let c = c+1;
+
+Loop
+
+
+
+
+Left Join(subgroup)
+Load
+    *
+Resident grade;
+
+Drop Table grade;
+
+
+Left Join(0)
+Load
+    *
+Resident subgroup;
+
+Drop Table subgroup;
+
+finance:
+NoConcatenate
+Load * Inline ["Agency ID"];
+
+Set a = 10;
+Set b = 11;
+Set c = 2011;
+
+Do while b < 15
+
+Concatenate(finance)
+LOAD
+	'$(c)' as "School Year",
+//     "Agency Name",
+//     "State Name [District] Latest available year",
+//     "State Abbr [District] Latest available year",
+    "Agency ID - NCES Assigned [District] Latest available year" as "Agency ID",
+    "Fall Membership (V33) [District Finance] 20$(a)-$(b)" as "Fall Membership (V33)",
+    "Total General Revenue (TOTALREV) [District Finance] 20$(a)-$(b)" as "Total General Revenue (TOTALREV)",
+    "Total Revenue - Local Sources (TLOCREV) [District Finance] 20$(a)-$(b)" as "Total Revenue - Local Sources (TLOCREV)",
+    "Total Revenue - State Sources (TSTREV) [District Finance] 20$(a)-$(b)" as "Total Revenue - State Sources (TSTREV)",
+    "Total Revenue - Federal Sources (TFEDREV) [District Finance] 20$(a)-$(b)" as "Total Revenue - Federal Sources",
+    "Total Current Expenditures - El-Sec Education (TCURELSC) [District Finance] 20$(a)-$(b)" as "Total Current Expenditures - El-Sec Education (TCURELSC)",
+    "Total Current Expenditures - Instruction (TCURINST) [District Finance] 20$(a)-$(b)" as "Total Current Expenditures - Instruction (TCURINST)",
+    "Total Current Expenditures - Support Services (TCURSSVC) [District Finance] 20$(a)-$(b)" as "Total Current Expenditures - Support Services (TCURSSVC)",
+    "Total Current Expenditures - Other El-Sec Programs (TCUROTH) [District Finance] 20$(a)-$(b)" as "Total Current Expenditures - Other El-Sec Programs (TCUROTH)",
+    "Total Current Expenditures - Salary (Z32) [District Finance] 20$(a)-$(b)" as "Total Current Expenditures - Salary (Z32)",
+    "Total Current Expenditures - Benefits (Z34) [District Finance] 20$(a)-$(b)" as "Total Current Expenditures - Benefits (Z34)",
+    "Total Expenditures (TOTALEXP) [District Finance] 20$(a)-$(b)" as "Total Expenditures (TOTALEXP)",
+    "Total Expenditures - Capital Outlay (TCAPOUT) [District Finance] 20$(a)-$(b)" as "Total Expenditures - Capital Outlay (TCAPOUT)",
+    "Total Current Expenditures - Non El-Sec Programs (TNONELSE) [District Finance] 20$(a)-$(b)" as "Total Current Expenditures - Non El-Sec Programs (TNONELSE)",
+    "ARRA Revenues - Title I (HR1) [District Finance] 20$(a)-$(b)" as "ARRA Revenues - Title I (HR1)",
+    "Current Expenditures - ARRA (HE1) [District Finance] 20$(a)-$(b)" as "Current Expenditures - ARRA (HE1)",
+    "Capital Outlay - ARRA (HE2) [District Finance] 20$(a)-$(b)" as "Capital Outlay - ARRA (HE2)",
+    "Total Revenue (TOTALREV) per Pupil (V33) [District Finance] 20$(a)-$(b)" as "Total Revenue (TOTALREV) per Pupil (V33)",
+    "Total Revenue - Local Sources (TLOCREV) per Pupil (V33) [District Finance] 20$(a)-$(b)" as "Total Revenue - Local Sources (TLOCREV) per Pupil (V33)",
+    "Total Revenue - State Sources (TSTREV) per Pupil (V33) [District Finance] 20$(a)-$(b)" as "Total Revenue - State Sources (TSTREV) per Pupil (V33)",
+    "Total Revenue - Federal Sources (TFEDREV) per Pupil (V33) [District Finance] 20$(a)-$(b)" as "Total Revenue - Federal Sources (TFEDREV) per Pupil (V33)",
+    "Total Current Expenditures - Instruction (TCURINST) per Pupil (V33) [District Finance] 20$(a)-$(b)" as "Total Current Expenditures - Instruction (TCURINST) per Pupil (V33)",
+    "Total Current Expenditures - Support Services (TCURSSVC) per Pupil (V33) [District Finance] 20$(a)-$(b)" as "Total Current Expenditures - Support Services (TCURSSVC) per Pupil (V33)",
+    "Total Current Expenditures - Other El-Sec Programs (TCUROTH) per Pupil (V33) [District Finance] 20$(a)-$(b)" as "Total Current Expenditures - Other El-Sec Programs (TCUROTH) per Pupil (V33)",
+    "Total Current Expenditures - Salary (Z32) per Pupil (V33) [District Finance] 20$(a)-$(b)" as "Total Current Expenditures - Salary (Z32) per Pupil (V33)",
+    "Total Current Expenditures - Benefits (Z34) per Pupil (V33) [District Finance] 20$(a)-$(b)" as "Total Current Expenditures - Benefits (Z34) per Pupil (V33)",
+    "Total Expenditures (TOTALEXP) per Pupil (V33) [District Finance] 20$(a)-$(b)" as "Total Expenditures (TOTALEXP) per Pupil (V33)",
+    "Total Expenditures - Capital Outlay (TCAPOUT) per Pupil (V33) [District Finance] 20$(a)-$(b)" as "Total Expenditures - Capital Outlay (TCAPOUT) per Pupil (V33)",
+    "Total Current Expenditures - Non El-Sec Programs (TNONELSE) per Pupil (V33) [District Finance] 20$(a)-$(b)" as "Total Current Expenditures - Non El-Sec Programs (TNONELSE) per Pupil (V33)",
+    "Total Current Expenditures (TCURELSC) per Pupil (V33) [District Finance] 20$(a)-$(b)" as "Total Current Expenditures (TCURELSC) per Pupil (V33)",
+    "Instructional Expenditures (E13) per Pupil (V33) [District Finance] 20$(a)-$(b)" as "Instructional Expenditures (E13) per Pupil (V33)"
+FROM [lib://03_MKTA_New (pubedu_georgem)/04_NCES\ELSI\ELSI District Finance Totals and Subtotals, Per Pupil Ratios.csv]
+(txt, codepage is 1252, embedded labels, delimiter is ',', msq, header is 6 lines);
+
+Let a = a+1;
+Let b = b+1;
+Let c = c+1;
+
+Loop
+
+Left Join(0)
+Load
+    *
+Resident finance;
+
+Drop Table finance;
+
+
+
+Store 0 into [$(Workspace)\0.qvd](qvd);
+
+Drop Table 0;
+
+"0a":
+LOAD
+	'School' as "Reporting Level",
+    "School Name",
+    "State Name [Public School] Latest available year" as "State Name",
+    "State Abbr [Public School] Latest available year" as "State Abbr",
+    "School ID - NCES Assigned [Public School] Latest available year" as "School ID",
+    "Agency Name [Public School] 2015-16" as "Agency Name",
+    "Agency ID - NCES Assigned [Public School] Latest available year" as "Agency ID",
+    "County Name [Public School] 2015-16" as "County Name",
+    "County Number [Public School] 2015-16" as "County Number",
+    "Web Site URL [Public School] 2015-16" as "Web Site URL",
+    "Years School Reported Data [Public School] Latest available year" as "Years Reported Data",
+    "Years School Did Not Report Data [Public School] Latest available year" as "Years Did Not Report Data",
+    "Location Address 1 [Public School] 2015-16" as "Location Address",
+    "Location City [Public School] 2015-16" as "Location City",
+    "Location ZIP [Public School] 2015-16" as "Location ZIP", 
+    "Location ZIP4 [Public School] 2015-16" as "Location ZIP4",
+    "Phone Number [Public School] 2015-16" as "Phone Number",
+    "School Type [Public School] 2015-16" as "School Type",
+    "Start of Year Status [Public School] 2015-16" as "Start of Year Status",
+    "Updated Status [Public School] 2015-16" as "Updated Status",
+    "Effective Date of Updated Status [Public School] 2015-16" as "Effective Date of Updated Status",
+    "Charter School [Public School] 2015-16" as "Charter School",
+    "Magnet School [Public School] 2015-16" as "Magnet School",
+    "Shared Time School [Public School] 2015-16" as "Shared Time School",
+    "Urban-centric Locale [Public School] 2015-16" as "Urban-centric Locale",
+    "School-wide Title I [Public School] 2015-16" as "School-wide Title I",
+    "Title I Eligible School [Public School] 2015-16" as "Title I Eligible School",
+    "Title I School Status [Public School] 2015-16" as "Title I School Status",
+    "CBSA Name [District] 2015-16" as "CBSA Name",
+    "CBSA ID [District] 2015-16" as "CBSA ID",
+    "CSA Name [District] 2015-16" as "CSA Name",
+    "CSA ID [District] 2015-16" as "CSA ID",
+    "Latitude [Public School] 2015-16" as "Latitude",
+    "Longitude [Public School] 2015-16" as "Longitude",
+    "State School ID [Public School] 2015-16" as "State School ID",
+    "State Agency ID [Public School] 2015-16" as "State Agency ID",
+    "Congressional Code [Public School] 2015-16" as "Congressional Code",
+    "Reconstituted flag [Public School] 2015-16" as "Reconstituted Flag",
+    "Virtual School Status [Public School] 2015-16" as "Virtual School Status",
+    "Charter Authorizer State ID Primary [Public School] 2015-16" as "Charter Authorizer State ID Primary",
+    "Charter Authorizer Name Primary [Public School] 2015-16" as "Charter Authorizer Name Primary",
+    "Charter Authorizer State ID Secondary [Public School] 2015-16" as "Charter Authorizer State ID Secondary",
+    "Charter Authorizer Name Secondary [Public School] 2015-16" as "Charter Authorizer Name Secondary",
+    "Supervisory Union (ID) Number [Public School] 2015-16" as "Supervisory Union (ID) Number",
+    "School Level Code [Public School] 2015-16" as "School Level Code",
+    "Lowest Grade Offered [Public School] 2015-16" as "Lowest Grade Offered",
+    "Highest Grade Offered [Public School] 2015-16" as "Highest Grade Offered",
+    "Prekindergarten offered [Public School] 2015-16" as "Prekindergarten Offered",
+    "Kindergarten offered [Public School] 2015-16" as "Kindergarten Offered",
+    "Grade 1 offered [Public School] 2015-16" as "Grade 1 Offered",
+    "Grade 2 offered [Public School] 2015-16" as "Grade 2 Offered",
+    "Grade 3 offered [Public School] 2015-16" as "Grade 3 Offered",
+    "Grade 4 offered [Public School] 2015-16" as "Grade 4 Offered",
+    "Grade 5 offered [Public School] 2015-16" as "Grade 5 Offered",
+    "Grade 6 offered [Public School] 2015-16" as "Grade 6 Offered",
+    "Grade 7 offered [Public School] 2015-16" as "Grade 7 Offered",
+    "Grade 8 offered [Public School] 2015-16" as "Grade 8 Offered",
+    "Grade 9 offered [Public School] 2015-16" as "Grade 9 Offered",
+    "Grade 10 offered [Public School] 2015-16" as "Grade 10 Offered",
+    "Grade 11 offered [Public School] 2015-16" as "Grade 11 Offered",
+    "Grade 12 offered [Public School] 2015-16" as "Grade 12 Offered",
+    "Grade 13 Offered [Public School] 2015-16" as "Grade 13 Offered",
+    "Ungraded offered [Public School] 2015-16" as "Ungraded Offered",
+    "Adult Education Offered [Public School] 2015-16" as "Adult Education Offered",
+    "No Grades Offered [Public School] 2015-16" as "No Grades Offered",
+    "National School Lunch Program [Public School] 2015-16" as "National School Lunch Program",
+    "Agency Type [District] 2015-16" as "Agency Type"
+FROM [lib://03_MKTA_New (pubedu_georgem)/04_NCES\ELSI\ELSI School Info.xlsx]
+(ooxml, embedded labels, header is 3 lines);
+
+
+
+Concatenate("0a")
+LOAD
+	'School' as "Reporting Level",
+    "School Name",
+    "State Name [Public School] Latest available year" as "State Name",
+    "State Abbr [Public School] Latest available year" as "State Abbr",
+    "School ID - NCES Assigned [Public School] Latest available year" as "School ID",
+    "Agency Name [Public School] 2015-16" as "Agency Name",
+    "Agency ID - NCES Assigned [Public School] Latest available year" as "Agency ID",
+    "County Name [Public School] 2015-16" as "County Name",
+    "County Number [Public School] 2015-16" as "County Number",
+    "Web Site URL [Public School] 2015-16" as "Web Site URL",
+    "Years School Reported Data [Public School] Latest available year" as "Years Reported Data",
+    "Years School Did Not Report Data [Public School] Latest available year" as "Years Did Not Report Data",
+    "Location Address 1 [Public School] 2015-16" as "Location Address",
+    "Location City [Public School] 2015-16" as "Location City",
+    "Location ZIP [Public School] 2015-16" as "Location ZIP", 
+    "Location ZIP4 [Public School] 2015-16" as "Location ZIP4",
+    "Phone Number [Public School] 2015-16" as "Phone Number",
+    "School Type [Public School] 2015-16" as "School Type",
+    "Start of Year Status [Public School] 2015-16" as "Start of Year Status",
+    "Updated Status [Public School] 2015-16" as "Updated Status",
+    "Effective Date of Updated Status [Public School] 2015-16" as "Effective Date of Updated Status",
+    "Charter School [Public School] 2015-16" as "Charter School",
+    "Magnet School [Public School] 2015-16" as "Magnet School",
+    "Shared Time School [Public School] 2015-16" as "Shared Time School",
+    "Urban-centric Locale [Public School] 2015-16" as "Urban-centric Locale",
+    "School-wide Title I [Public School] 2015-16" as "School-wide Title I",
+    "Title I Eligible School [Public School] 2015-16" as "Title I Eligible School",
+    "Title I School Status [Public School] 2015-16" as "Title I School Status",
+    "CBSA Name [District] 2015-16" as "CBSA Name",
+    "CBSA ID [District] 2015-16" as "CBSA ID",
+    "CSA Name [District] 2015-16" as "CSA Name",
+    "CSA ID [District] 2015-16" as "CSA ID",
+    "Latitude [Public School] 2015-16" as "Latitude",
+    "Longitude [Public School] 2015-16" as "Longitude",
+    "State School ID [Public School] 2015-16" as "State School ID",
+    "State Agency ID [Public School] 2015-16" as "State Agency ID",
+    "Congressional Code [Public School] 2015-16" as "Congressional Code",
+    "Reconstituted flag [Public School] 2015-16" as "Reconstituted Flag",
+    "Virtual School Status [Public School] 2015-16" as "Virtual School Status",
+    "Charter Authorizer Name Primary [Public School] 2015-16" as "Charter Authorizer Name Primary",
+    "Charter Authorizer Name Secondary [Public School] 2015-16" as "Charter Authorizer Name Secondary",
+    "Supervisory Union (ID) Number [Public School] 2015-16" as "Supervisory Union (ID) Number",
+    "School Level Code [Public School] 2015-16" as "School Level Code",
+    "Lowest Grade Offered [Public School] 2015-16" as "Lowest Grade Offered",
+    "Highest Grade Offered [Public School] 2015-16" as "Highest Grade Offered",
+    "Prekindergarten offered [Public School] 2015-16" as "Prekindergarten Offered",
+    "Kindergarten offered [Public School] 2015-16" as "Kindergarten Offered",
+    "Grade 1 offered [Public School] 2015-16" as "Grade 1 Offered",
+    "Grade 2 offered [Public School] 2015-16" as "Grade 2 Offered",
+    "Grade 3 offered [Public School] 2015-16" as "Grade 3 Offered",
+    "Grade 4 offered [Public School] 2015-16" as "Grade 4 Offered",
+    "Grade 5 offered [Public School] 2015-16" as "Grade 5 Offered",
+    "Grade 6 offered [Public School] 2015-16" as "Grade 6 Offered",
+    "Grade 7 offered [Public School] 2015-16" as "Grade 7 Offered",
+    "Grade 8 offered [Public School] 2015-16" as "Grade 8 Offered",
+    "Grade 9 offered [Public School] 2015-16" as "Grade 9 Offered",
+    "Grade 10 offered [Public School] 2015-16" as "Grade 10 Offered",
+    "Grade 11 offered [Public School] 2015-16" as "Grade 11 Offered",
+    "Grade 12 offered [Public School] 2015-16" as "Grade 12 Offered",
+    "Grade 13 Offered [Public School] 2015-16" as "Grade 13 Offered",
+    "Ungraded offered [Public School] 2015-16" as "Ungraded Offered",
+    "Adult Education Offered [Public School] 2015-16" as "Adult Education Offered",
+    "No Grades Offered [Public School] 2015-16" as "No Grades Offered",
+    "National School Lunch Program [Public School] 2015-16" as "National School Lunch Program",
+    "Agency Type [District] 2015-16" as "Agency Type"
+FROM [lib://03_MKTA_New (pubedu_georgem)/04_NCES\ELSI\ELSI School Info CO.xlsx]
+(ooxml, embedded labels, header is 3 lines);
+
+enr1:
+NoConcatenate
+Load * Inline ["School ID"];
+
+enr2:
+NoConcatenate
+Load * Inline ["School ID"];
+
+enr3:
+NoConcatenate
+Load * Inline ["School ID"];
+
+Set a = 10;
+Set b = 11;
+Set c = 2011;
+
+Do while b < 17
+
+Concatenate(enr1)
+LOAD
+    '$(c)' as "School Year",
+//     "School Name",
+//     "State Name [Public School] Latest available year",
+    "American Indian/Alaska Native Students [Public School] 20$(a)-$(b)" as "American Indian/Alaska Native",
+    "Asian or Asian/Pacific Islander Students [Public School] 20$(a)-$(b)" as "Asian or Asian/Pacific Islander",
+    "Hispanic Students [Public School] 20$(a)-$(b)" as Hispanic,
+    "Black Students [Public School] 20$(a)-$(b)" as Black,
+    "White Students [Public School] 20$(a)-$(b)" as White,
+    "Hawaiian Nat./Pacific Isl. Students [Public School] 20$(a)-$(b)" as "Hawaiian Nat./Pacific Isl.",
+    "Two or More Races Students [Public School] 20$(a)-$(b)" as "Two or More Races",
+    "Total Race/Ethnicity [Public School] 20$(a)-$(b)" as "Total Race/Ethnicity",
+    "Male Students [Public School] 20$(a)-$(b)" as Male,
+    "Female Students [Public School] 20$(a)-$(b)" as Female,
+    "Total Students All Grades (Excludes AE) [Public School] 20$(a)-$(b)" as "Total Students All Grades (Excludes AE)",
+//     "State Abbr [Public School] Latest available year",
+    "School ID - NCES Assigned [Public School] Latest available year" as "School ID"
+//     "Agency ID - NCES Assigned [Public School] Latest available year"
+FROM [lib://03_MKTA_New (pubedu_georgem)/04_NCES\ELSI\ELSI School Enr1.xlsx]
+(ooxml, embedded labels, header is 3 lines);
+
+Concatenate(enr2)
+LOAD
+    '$(c)' as "School Year",
+//     "School Name",
+//     "State Name [Public School] Latest available year",
+//     "State Abbr [Public School] Latest available year",
+    "School ID - NCES Assigned [Public School] Latest available year" as "School ID",
+//     "Agency ID - NCES Assigned [Public School] Latest available year",
+    "Grades 1-8 Students [Public School] 20$(a)-$(b)" as "Grades 1-8",
+    "Grades 9-12 Students [Public School] 20$(a)-$(b)" as "Grades 9-12",
+    "Prekindergarten Students [Public School] 20$(a)-$(b)" as Prekindergarten,
+    "Kindergarten Students [Public School] 20$(a)-$(b)" as Kindergarten,
+    "Grade 1 Students [Public School] 20$(a)-$(b)" as "Grade 1",
+    "Grade 2 Students [Public School] 20$(a)-$(b)" as "Grade 2",
+    "Grade 3 Students [Public School] 20$(a)-$(b)" as "Grade 3",
+    "Grade 4 Students [Public School] 20$(a)-$(b)" as "Grade 4",
+    "Grade 5 Students [Public School] 20$(a)-$(b)" as "Grade 5",
+    "Grade 6 Students [Public School] 20$(a)-$(b)" as "Grade 6",
+    "Grade 7 Students [Public School] 20$(a)-$(b)" as "Grade 7"
+FROM [lib://03_MKTA_New (pubedu_georgem)/04_NCES\ELSI\ELSI School Enr2.xlsx]
+(ooxml, embedded labels, header is 3 lines);
+
+Concatenate(enr3)
+LOAD
+	'$(c)' as "School Year",
+//     "School Name",
+//     "State Name [Public School] Latest available year",
+    "Grade 8 Students [Public School] 20$(a)-$(b)" as "Grade 8",
+    "Grade 9 Students [Public School] 20$(a)-$(b)" as "Grade 9",
+    "Grade 10 Students [Public School] 20$(a)-$(b)" as "Grade 10",
+    "Grade 11 Students [Public School] 20$(a)-$(b)" as "Grade 11",
+    "Grade 12 Students [Public School] 20$(a)-$(b)" as "Grade 12",
+    "Ungraded Students [Public School] 20$(a)-$(b)" as "Ungraded",
+    "Free Lunch Eligible [Public School] 20$(a)-$(b)" as "Free Lunch Eligible",
+    "Reduced-price Lunch Eligible Students [Public School] 20$(a)-$(b)" as "Reduced-price Lunch Eligible",
+    "Free and Reduced Lunch Students [Public School] 20$(a)-$(b)" as "Free and Reduced Lunch Students",
+    "School ID - NCES Assigned [Public School] Latest available year" as "School ID"
+//     "Agency ID - NCES Assigned [Public School] Latest available year"
+//     "State Abbr [Public School] Latest available year"
+FROM [lib://03_MKTA_New (pubedu_georgem)/04_NCES\ELSI\ELSI School Enr3.xlsx]
+(ooxml, embedded labels, header is 3 lines);
+
+Let a = a+1;
+Let b = b+1;
+Let c = c+1;
+
+Loop
+
+
+Store enr1 into [$(Workspace)\enr1.qvd](qvd);
+Store enr2 into [$(Workspace)\enr2.qvd](qvd);
+Store enr3 into [$(Workspace)\enr3.qvd](qvd);
+
+
+Left Join("0a")
+Load
+    *
+Resident enr1;
+
+Drop Table enr1;
+
+
+Left Join("0a")
+Load
+    *
+Resident enr2;
+
+Drop Table enr2;
+
+
+
+Left Join("0a")
+Load
+    *
+Resident enr3;
+
+Drop Table enr3;
+
+Store "0a" into [$(Workspace)\0a.qvd](qvd);
+
+Drop Table "0a"
+;
+
+
+1:
+LOAD
+    *
+FROM [$(Workspace)\0.qvd]
+(qvd);
+
+Concatenate(1)
+LOAD
+    *
+FROM [$(Workspace)\0a.qvd]
+(qvd);
+
+Store 1 into [$(Workspace)\1.qvd](qvd);
+
+Drop Table 1;
+
+
+
+2:
+LOAD
+    *
+FROM [$(Workspace)\1.qvd]
+(qvd);
+
+Store 2 into [$(Workspace)\2.qvd](qvd)
+;
+
+Drop Table 2
+;
+
+
+
+3:
+CrossTable("ELSI Subgroup Original","ELSI Enr",8)
+LOAD
+    "State Abbr",
+    "Reporting Level",
+    "Agency Name",
+    "School Name",
+    "School Year",
+    "Agency ID",
+    "School ID",
+	'All Grades' as "ELSI Grade",
+
+    "Total Students All Grades (Excludes AE)",
+    "Limited English Proficient (LEP) / English Language Learners (ELL)",
+    "Individualized Education Program",
+    "Free Lunch Eligible",
+    "Reduced-price Lunch Eligible",
+    "Free and Reduced Lunch",
+    Male,
+    Female,
+    "American Indian/Alaska Native",
+    "Asian or Asian/Pacific Islander",
+    Hispanic,
+    "Black",
+    "White",
+    "Hawaiian Nat./Pacific Isl.",
+    "Two or More Races",
+    "Total Race/Ethnicity"
+
+FROM [$(Workspace)\2.qvd]
+(qvd);
+
+CrossTable("ELSI Grade","ELSI Enr",8)
+LOAD
+    "State Abbr",
+    "Reporting Level",
+    "Agency Name",
+    "School Name",
+    "School Year",
+    "Agency ID",
+    "School ID",
+	'Total Students All Grades (Excludes AE)' as "ELSI Subgroup Original",
+    
+    "Grades 1-8",
+    "Grades 9-12",
+    Prekindergarten,
+    Kindergarten,
+    "Grade 1",
+    "Grade 2",
+    "Grade 3",
+    "Grade 4",
+    "Grade 5",
+    "Grade 6",
+    "Grade 7",
+    "Grade 8",
+    "Grade 9",
+    "Grade 10",
+    "Grade 11",
+    "Grade 12",
+    Ungraded
+
+FROM [$(Workspace)\2.qvd]
+(qvd);
+
+Store 3 into [$(Workspace)\3.qvd](qvd)
+;
